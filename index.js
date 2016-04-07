@@ -22,7 +22,7 @@ var mixins = {
 		appMeta: 'google-play-app',
 		iconRels: ['android-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
 		getStoreLink: function() {
-			return 'http://play.google.com/store/apps/details?id=' + this.appId;
+			return 'market://details?id=' + this.appId;
 		}
 	},
 	windows: {
@@ -58,9 +58,13 @@ var SmartBanner = function(options) {
 		this.type = this.options.force;
 	} else if (agent.os.name === 'Windows Phone' || agent.os.name === 'Windows Mobile') {
 		this.type = 'windows';
-	//iOS >= 6 has native support for SmartAppBanner
-	} else if (agent.os.name === 'iOS' && parseInt(agent.os.version) < 6) {
-		this.type = 'ios';
+	} else if (agent.os.name === 'iOS') {
+  		//iOS Safari >= 6 has native support for SmartAppBanner
+  		if (parseInt(agent.os.version) < 6) {
+  			this.type = 'ios';
+  		} else if (agent.browser.name !== 'Safari' && agent.browser.name !== 'Mobile Safari') {
+  			this.type = 'ios';
+  		}
 	} else if (agent.os.name === 'Android') {
 		this.type = 'android';
 	}
